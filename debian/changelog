@@ -1,0 +1,7 @@
+opengl-es-virtual-drv (0.2.0-0) unstable; urgency=low
+
+  * Initial Version
+  * Git: pkgs/o/opengl-es-virtual-drv
+  * Tag: opengl-es-virtual-drv_0.2.0-0
+
+ -- Minsu Han <minsu81.han@samsung.com>  Wed, 08 Feb 2012 13:15:16 +0900
