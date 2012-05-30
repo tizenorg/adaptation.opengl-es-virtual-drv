@@ -5,6 +5,7 @@ Release:    1
 Group:      TO_BE/FILLED_IN
 License:    Apache-2.0
 Source0:    %{name}-%{version}.tar.gz
+Source1001: packaging/opengl-es-virtual-drv.manifest 
 BuildRequires:  pkgconfig(x11) 
 
 
@@ -29,6 +30,7 @@ needed by programs that want to compile with OpenGL ES.
 
 
 %build
+cp %{SOURCE1001} .
 %reconfigure
 make %{?jobs:-j%jobs}
 
@@ -39,12 +41,14 @@ rm -rf %{buildroot}
 
 
 %files
+%manifest opengl-es-virtual-drv.manifest
 %defattr(-,root,root,-)
 %doc LICENSE
 %{_libdir}/*.so*
 
 
 %files devel
+%manifest opengl-es-virtual-drv.manifest
 %defattr(-,root,root,-)
 %{_includedir}/EGL/*.h
 %{_includedir}/GLES/*.h
