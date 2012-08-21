@@ -13,8 +13,8 @@
 # from having to guess our platform (since we know it already)
 DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
-
-CFLAGS ?= -Wall
+ 
+CFLAGS ?= -Wall 
 LDFLAGS ?=
 PREFIX ?= /usr
 DATADIR ?= /opt
@@ -22,7 +22,7 @@ CONFIGURE_OPTION ?=
 
 CFLAGS += -fPIC -rdynamic
 CXXFLAGS += -fPIC
-LDFLAGS += -Wl,--hash-style=both -Wl,--as-needed -Wl,--rpath=$(PREFIX)/lib
+LDFLAGS += -Wl,--hash-style=both -Wl,--as-needed -Wl,--rpath=$(PREFIX)/lib 
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -O0
@@ -53,7 +53,7 @@ configure-stamp:
 
 
 build: build-stamp
-build-stamp: configure-stamp
+build-stamp: configure-stamp 
 	dh_testdir
 
 	# Add here commands to compile the package.
@@ -75,13 +75,13 @@ endif
 ifneq "$(wildcard /usr/share/misc/config.guess)" ""
 	cp -f /usr/share/misc/config.guess config.guess
 endif
-
-	dh_clean
+	
+	dh_clean 
 
 install: build
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_clean -k 
 	dh_installdirs
 
 	# Add here commands to install the package into debian/tmp
@@ -103,7 +103,7 @@ binary-arch: build install
 	dh_installexamples
 	dh_install --sourcedir debian/tmp
 #	dh_installmenu
-#	dh_installdebconf
+#	dh_installdebconf   
 #	dh_installlogrotate
 #	dh_installemacsen
 #	dh_installpam

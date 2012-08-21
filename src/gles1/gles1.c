@@ -111,7 +111,7 @@ void glGetFixedv (GLenum pname, GLfixed *params) { return; }
 void glGetIntegerv (GLenum pname, GLint *params) { return; }
 void glGetLightxv (GLenum light, GLenum pname, GLfixed *params) { return; }
 void glGetMaterialxv (GLenum face, GLenum pname, GLfixed *params) { return; }
-void glGetPointerv (GLenum pname, void **params) { return; }
+void glGetPointerv (GLenum pname, GLvoid **params) { return; }
 const GLubyte * GL_APIENTRY glGetString (GLenum name) { return 0; }
 void glGetTexEnviv (GLenum env, GLenum pname, GLint *params) { return; }
 void glGetTexEnvxv (GLenum env, GLenum pname, GLfixed *params) { return; }
