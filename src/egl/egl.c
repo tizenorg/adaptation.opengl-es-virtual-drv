@@ -20,6 +20,92 @@
  */
 
 #include "EGL/egl.h"
+//#include "GLES/egl_gles1.h"
+//#include "GLES2/egl_gles2.h"
+
+ 
+
+typedef void (*__egl_funcptr)();
+
+typedef struct egl_ExtProcedure
+{
+	const char *pProcname;
+	__egl_funcptr pfnProc;
+} EGL_ExtProcedures;
+
+EGL_ExtProcedures eglExtProcedures[] =
+	{
+#ifdef EGL_KHR_lock_surface
+		  {"eglLockSurfaceKHR", (__egl_funcptr)eglLockSurfaceKHR},
+		  {"eglUnlockSurfaceKHR", (__egl_funcptr)eglUnlockSurfaceKHR},
+#endif  
+#if defined(EGL_KHR_image)
+		  {"eglCreateImageKHR",             (__egl_funcptr)eglCreateImageKHR},
+		  {"eglDestroyImageKHR",            (__egl_funcptr)eglDestroyImageKHR},
+#endif /* defined(EGL_KHR_image) */
+
+ 
+#if defined(EGL_EXTENSION_KHR_FENCE_SYNC) || defined(EGL_KHR_reusable_sync)
+		  {"eglCreateSyncKHR",              (__egl_funcptr)eglCreateSyncKHR},
+		  {"eglDestroySyncKHR",             (__egl_funcptr)eglDestroySyncKHR},
+		  {"eglClientWaitSyncKHR",          (__egl_funcptr)eglClientWaitSyncKHR},
+#if defined(EGL_KHR_reusable_sync)
+		  {"eglSignalSyncKHR",              (__egl_funcptr)eglSignalSyncKHR},
+#endif /* defined(EGL_KHR_reusable_sync) */
+		  {"eglGetSyncAttribKHR",           (__egl_funcptr)eglGetSyncAttribKHR},
+#endif /* defined(EGL_EXTENSION_KHR_FENCE_SYNC) || defined(EGL_KHR_reusable_sync) */
+
+#ifdef EGL_NV_sync
+ 		  {"eglCreateFenceSyncNV",              (__egl_funcptr)eglCreateFenceSyncNV},
+		  {"eglDestroySyncNV",             (__egl_funcptr)eglDestroySyncNV},
+		  {"eglFenceNV",          (__egl_funcptr)eglFenceNV},
+		  {"eglClientWaitSyncNV",              (__egl_funcptr)eglClientWaitSyncNV},
+		  {"eglSignalSyncNV",             (__egl_funcptr)eglSignalSyncNV},
+		  {"eglGetSyncAttribNV",          (__egl_funcptr)eglGetSyncAttribNV}, 
+ 
+#endif
+ 
+
+#ifdef EGL_HI_clientpixmap
+ 		  {"eglCreatePixmapSurfaceHI",          (__egl_funcptr)eglCreatePixmapSurfaceHI}, 
+#endif	 
+
+
+#ifdef EGL_MESA_drm_image
+		  {"eglCreateDRMImageMESA",             (__egl_funcptr)eglCreateDRMImageMESA},
+		  {"eglExportDRMImageMESA",          (__egl_funcptr)eglExportDRMImageMESA}, 
+#endif
+
+
+#ifdef EGL_NV_post_sub_buffer 
+		  {"eglPostSubBufferNV",             (__egl_funcptr)eglPostSubBufferNV},
+ 
+#endif
+
+
+#ifdef EGL_ANGLE_query_surface_pointer
+		  {"eglQuerySurfacePointerANGLE",             (__egl_funcptr)eglQuerySurfacePointerANGLE},
+#endif
+
+
+#ifdef EGL_SEC_client_pixmap
+		  {"eglCreateClientPixmapFromClientBufferSEC",             (__egl_funcptr)eglCreateClientPixmapFromClientBufferSEC},
+#endif
+
+#ifdef EGL_NV_system_time
+		  {"eglGetSystemTimeFrequencyNV",             (__egl_funcptr)eglGetSystemTimeFrequencyNV},
+		  {"eglGetSystemTimeNV",          (__egl_funcptr)eglGetSystemTimeNV}, 
+#endif
+ 
+
+#if defined(EGL_KHR_image) && defined(EGL_SEC_image_map)
+		  {"eglMapImageSEC", (__egl_funcptr)eglMapImageSEC},
+		  {"eglUnmapImageSEC", (__egl_funcptr)eglUnmapImageSEC},
+		  {"eglGetImageAttribSEC", (__egl_funcptr)eglGetImageAttribSEC},
+#endif /* defined(EGL_KHR_image) && defined(EGL_SEC_image_map) */
+
+		  {0,0}
+	  };
 
 EGLint eglGetError(void) { return 0; }
 EGLDisplay eglGetDisplay(EGLNativeDisplayType display_id) { return 0; }
@@ -54,4 +140,127 @@ EGLBoolean eglWaitGL(void) { return 0; }
 EGLBoolean eglWaitNative(EGLint engine) { return 0; }
 EGLBoolean eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) { return 0; }
 EGLBoolean eglCopyBuffers(EGLDisplay dpy, EGLSurface surface, EGLNativePixmapType target) { return 0; }
-__eglMustCastToProperFunctionPointerType eglGetProcAddress(const char *procname) { return 0; }
+__eglMustCastToProperFunctionPointerType eglGetProcAddress(const char *procname) 
+{
+		EGLint uIndex;
+                __eglMustCastToProperFunctionPointerType glesproc;		
+
+		if (procname== 0)
+		{
+			return 0;
+		}
+		
+		for (uIndex = 0 ; eglExtProcedures[uIndex].pProcname !=0 ; uIndex++)
+		{
+			if( strncmp( eglExtProcedures[uIndex].pProcname, procname, strlen( eglExtProcedures[uIndex].pProcname )+1 )==0 )
+			{
+				return eglExtProcedures[uIndex].pfnProc;
+			}
+		}
+
+
+/*		//gles1
+                glesproc = glGetGles1Proc( procname); 		
+                if( glesproc != 0 )
+                { 
+                         return glesproc;
+                }
+		//gles2
+                glesproc = glGetGles2Proc( procname);
+
+                if( glesproc != 0 )
+                { 
+                         return glesproc;
+                }*/
+ return 0;
+}
+
+#ifdef EGL_KHR_lock_surface
+ 
+EGLAPI EGLBoolean EGLAPIENTRY eglLockSurfaceKHR (EGLDisplay display, EGLSurface surface, const EGLint *attrib_list) { return 0; }
+EGLAPI EGLBoolean EGLAPIENTRY eglUnlockSurfaceKHR (EGLDisplay display, EGLSurface surface){ return 0; }
+ 
+#endif
+
+#ifdef EGL_KHR_image
+ 
+EGLAPI EGLImageKHR EGLAPIENTRY eglCreateImageKHR (EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLClientBuffer buffer, const EGLint *attrib_list){ return 0; }
+EGLAPI EGLBoolean EGLAPIENTRY eglDestroyImageKHR (EGLDisplay dpy, EGLImageKHR image){ return 0; }
+ 
+#endif
+
+
+#ifdef EGL_KHR_reusable_sync
+ 
+EGLAPI EGLSyncKHR EGLAPIENTRY eglCreateSyncKHR(EGLDisplay dpy, EGLenum type, const EGLint *attrib_list){ return 0; }
+EGLAPI EGLBoolean EGLAPIENTRY eglDestroySyncKHR(EGLDisplay dpy, EGLSyncKHR sync){ return 0; }
+EGLAPI EGLint EGLAPIENTRY eglClientWaitSyncKHR(EGLDisplay dpy, EGLSyncKHR sync, EGLint flags, EGLTimeKHR timeout){ return 0; }
+EGLAPI EGLBoolean EGLAPIENTRY eglSignalSyncKHR(EGLDisplay dpy, EGLSyncKHR sync, EGLenum mode){ return 0; }
+EGLAPI EGLBoolean EGLAPIENTRY eglGetSyncAttribKHR(EGLDisplay dpy, EGLSyncKHR sync, EGLint attribute, EGLint *value){ return 0; }
+ 
+#endif
+
+#ifdef EGL_NV_sync
+ 
+EGLSyncNV eglCreateFenceSyncNV (EGLDisplay dpy, EGLenum condition, const EGLint *attrib_list){ return 0; }
+EGLBoolean eglDestroySyncNV (EGLSyncNV sync){ return 0; }
+EGLBoolean eglFenceNV (EGLSyncNV sync){ return 0; }
+EGLint eglClientWaitSyncNV (EGLSyncNV sync, EGLint flags, EGLTimeNV timeout){ return 0; }
+EGLBoolean eglSignalSyncNV (EGLSyncNV sync, EGLenum mode){ return 0; }
+EGLBoolean eglGetSyncAttribNV (EGLSyncNV sync, EGLint attribute, EGLint *value){ return 0; }
+ 
+#endif
+
+
+
+
+#ifdef EGL_HI_clientpixmap
+ 
+EGLAPI EGLSurface EGLAPIENTRY eglCreatePixmapSurfaceHI(EGLDisplay dpy, EGLConfig config, struct EGLClientPixmapHI* pixmap){ return 0; }
+
+#endif	/* EGL_HI_clientpixmap */
+
+
+#ifdef EGL_MESA_drm_image
+
+EGLAPI EGLImageKHR EGLAPIENTRY eglCreateDRMImageMESA (EGLDisplay dpy, const EGLint *attrib_list){ return 0; }
+EGLAPI EGLBoolean EGLAPIENTRY eglExportDRMImageMESA (EGLDisplay dpy, EGLImageKHR image, EGLint *name, EGLint *handle, EGLint *stride){ return 0; }
+#endif
+
+
+#ifdef EGL_NV_post_sub_buffer
+
+
+EGLAPI EGLBoolean EGLAPIENTRY eglPostSubBufferNV (EGLDisplay dpy, EGLSurface surface, EGLint x, EGLint y, EGLint width, EGLint height){ return 0; }
+
+#endif
+
+
+#ifdef EGL_ANGLE_query_surface_pointer
+
+EGLAPI EGLBoolean eglQuerySurfacePointerANGLE(EGLDisplay dpy, EGLSurface surface, EGLint attribute, void **value){ return 0; }
+
+#endif
+
+
+#ifdef EGL_SEC_client_pixmap
+
+EGLAPI EGLSurface eglCreateClientPixmapFromClientBufferSEC (EGLDisplay dpy, EGLenum buftype, EGLClientBuffer buffer, EGLConfig config, const EGLint *attrib_list){ return 0; }
+
+#endif
+
+#ifdef EGL_NV_system_time
+#ifdef EGL_SEC_image_map
+
+EGLAPI void * EGLAPIENTRY eglMapImageSEC (EGLDisplay dpy, EGLImageKHR image){ return 0; }
+EGLAPI EGLBoolean EGLAPIENTRY eglUnmapImageSEC (EGLDisplay dpy, EGLImageKHR image){ return 0; }
+EGLAPI EGLBoolean EGLAPIENTRY eglGetImageAttribSEC (EGLDisplay dpy, EGLImageKHR image, EGLint attribute, EGLint *value){ return 0; }
+
+#endif
+
+EGLAPI EGLuint64NV EGLAPIENTRY eglGetSystemTimeFrequencyNV(void){ return 0; }
+EGLAPI EGLuint64NV EGLAPIENTRY eglGetSystemTimeNV(void){ return 0; }
+
+#endif
+ 
+
