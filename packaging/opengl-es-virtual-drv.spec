@@ -1,6 +1,6 @@
 Name:       opengl-es-virtual-drv
 Summary:    The Virtual OpenGL ES library
-Version:    0.1.4
+Version:    0.1.5
 Release:    10
 #ExclusiveArch:  %arm
 AutoReq: 0
@@ -52,9 +52,9 @@ cp -a src/include/KHR %{buildroot}%{_includedir}
 
 %if 0%{?simulator}
 mkdir -p %{buildroot}/usr/lib/mesa-gl
-cp %{buildroot}/usr/lib/libEGL.so %{buildroot}/usr/lib/mesa-gl/libEGL.so.1.0
-cp %{buildroot}/usr/lib/libGLESv1_CM.so %{buildroot}/usr/lib/mesa-gl/libGLESv1_CM.so.1.1.0
-cp %{buildroot}/usr/lib/libGLESv2.so %{buildroot}/usr/lib/mesa-gl/libGLESv2.so.2.0.0
+mv %{buildroot}/usr/lib/libEGL.so %{buildroot}/usr/lib/mesa-gl/libEGL.so.1.0
+mv %{buildroot}/usr/lib/libGLESv1_CM.so %{buildroot}/usr/lib/mesa-gl/libGLESv1_CM.so.1.1.0
+mv %{buildroot}/usr/lib/libGLESv2.so %{buildroot}/usr/lib/mesa-gl/libGLESv2.so.2.0.0
 %endif
 
 %files
