@@ -58,6 +58,7 @@ mv %{buildroot}/usr/lib/libGLESv2.so %{buildroot}/usr/lib/mesa-gl/libGLESv2.so.2
 %endif
 
 %files
+%manifest opengl-es-virtual-drv.manifest
 %defattr(-,root,root,-)
 %if 0%{?simulator}
 %{_libdir}/mesa-gl/libGLESv1_CM.so.1.1.0
