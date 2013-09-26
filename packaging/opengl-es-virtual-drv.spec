@@ -45,6 +45,8 @@ make %{?jobs:-j%jobs}
 
 %install
 rm -rf %{buildroot}
+mkdir -p %{buildroot}/usr/share/license
+cp LICENSE %{buildroot}/usr/share/license/%{name}
 
 %make_install
 mkdir -p %{buildroot}%{_includedir}
@@ -69,6 +71,7 @@ mv %{buildroot}/usr/lib/libGLESv2.so %{buildroot}/usr/lib/mesa-gl/libGLESv2.so.2
 %{_libdir}/libGLESv2.so
 %{_libdir}/libEGL.so
 %endif
+/usr/share/license/%{name}
 
 %files devel
 %defattr(-,root,root,-)
