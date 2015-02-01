@@ -1,9 +1,9 @@
 Name :		opengl-es-virtual-drv
 Summary :	OpenGL ES Virtual Driver
 Version :	0.1.6
-Release :	00 
+Release :	01
 AutoReq:	0
-Group :		System/Hardware Support
+Group :		System/Libraries
 License :	Apache-2.0
 Source0:	%{name}-%{version}.tar.gz
 Provides:	opengl-es-drv
@@ -23,7 +23,7 @@ during build/compile time.
 
 %package devel
 Summary:	Development files for OpenGL ES library
-Group:		System/Hardware Support
+Group:		System/Libraries
 Requires:	%{name} = %{version}-%{release}
 Provides:	opengl-es-drv-devel
 Conflicts:	opengl-es-mali400mp-devel
@@ -53,13 +53,38 @@ cp LICENSE %{buildroot}/usr/share/license/%{name}
 
 %makeinstall
 
+ln -sf libEGL.so.1.5 %{buildroot}%{_libdir}/libEGL.so
+ln -sf libEGL.so.1.5 %{buildroot}%{_libdir}/libEGL.so.1
+ln -sf libGLESv1_CM.so.1.1 %{buildroot}%{_libdir}/libGLES_CM.so
+ln -sf libGLESv1_CM.so.1.1 %{buildroot}%{_libdir}/libGLES_CM.so.1
+ln -sf libGLESv1_CM.so.1.1 %{buildroot}%{_libdir}/libGLESv1_CM.so
+ln -sf libGLESv1_CM.so.1.1 %{buildroot}%{_libdir}/libGLESv1_CM.so.1
+ln -sf libGLESv2.so.2.0 %{buildroot}%{_libdir}/libGLESv2.so
+ln -sf libGLESv2.so.2.0 %{buildroot}%{_libdir}/libGLESv2.so.2
+ln -sf libGLESv3.so.3.1 %{buildroot}%{_libdir}/libGLESv3.so
+ln -sf libGLESv3.so.3.1 %{buildroot}%{_libdir}/libGLESv3.so.3
+
+%post -p /sbin/ldconfig
+
+%postun -p /sbin/ldconfig
+
 %files
-%manifest opengl-es-virtual-drv.manifest
+%manifest packaging/opengl-es-virtual-drv.manifest
 %defattr(-,root,root,-)
 %{_libdir}/libEGL.so
+%{_libdir}/libEGL.so.1
+%{_libdir}/libEGL.so.1.5
+%{_libdir}/libGLES_CM.so
+%{_libdir}/libGLES_CM.so.1
 %{_libdir}/libGLESv1_CM.so
+%{_libdir}/libGLESv1_CM.so.1
+%{_libdir}/libGLESv1_CM.so.1.1
 %{_libdir}/libGLESv2.so
+%{_libdir}/libGLESv2.so.2
+%{_libdir}/libGLESv2.so.2.0
 %{_libdir}/libGLESv3.so
+%{_libdir}/libGLESv3.so.3
+%{_libdir}/libGLESv3.so.3.1
 /usr/share/license/%{name}
 
 %files devel
@@ -79,6 +104,8 @@ cp LICENSE %{buildroot}/usr/share/license/%{name}
 %{_includedir}/GLES3/gl3platform.h
 %{_includedir}/KHR/khrplatform.h
 %{_libdir}/pkgconfig/gles11.pc
+%{_libdir}/pkgconfig/glesv1_cm.pc
 %{_libdir}/pkgconfig/gles20.pc
+%{_libdir}/pkgconfig/glesv2.pc
 %{_libdir}/pkgconfig/gles30.pc
 %{_libdir}/pkgconfig/gles31.pc
